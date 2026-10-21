@@ -1,88 +1,17 @@
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import { content, cvFiles } from './content'
 
-const experience = [
-  'Desarrollo de interfaces React para módulos de gestión: formularios complejos, tablas filtrables y flujos de carga de datos.',
-  'Implementación de APIs REST en .NET con validaciones de negocio y control de acceso.',
-  'Optimización de reportes administrativos en SQL Server mediante stored procedures y mejoras en consultas existentes.',
-  'Automatización de procesos administrativos con Selenium WebDriver y .NET.',
-]
+const STORAGE_KEY = 'lang'
 
-const projects = [
-  {
-    number: '01',
-    name: 'Don Espejo Services',
-    type: 'Sitio web · React',
-    description:
-      'Sitio para una empresa real de servicios, con rutas y contenido optimizados para cada servicio, diseño responsive y metadatos dinámicos.',
-    stack: ['React', 'Vite', 'Tailwind CSS'],
-  },
-  {
-    number: '02',
-    name: 'Gestión de turnos médicos',
-    type: 'Aplicación web · .NET',
-    description:
-      'Sistema para administrar pacientes, médicos y turnos, con validación de disponibilidad y consultas por fecha y profesional.',
-    stack: ['C#', 'ASP.NET', 'SQL Server'],
-  },
-  {
-    number: '03',
-    name: 'Pac-Man',
-    type: 'Videojuego · C++',
-    description:
-      'Una versión jugable con lógica de enemigos, colisiones y sistema de puntuación, renderizada en tiempo real.',
-    stack: ['C++', 'SFML', 'Game logic'],
-  },
-]
-
-const stackGroups = [
-  {
-    title: 'Frontend',
-    items: ['JavaScript', 'TypeScript', 'React', 'HTML & CSS', 'Tailwind CSS', 'Vite'],
-  },
-  {
-    title: 'Backend y datos',
-    items: ['C#', '.NET', 'ASP.NET', 'APIs REST', 'SQL Server'],
-  },
-  {
-    title: 'Herramientas',
-    items: ['Git', 'Docker', 'Selenium', 'Bun', 'ESLint', 'Agile', 'SOLID'],
-  },
-  {
-    title: 'IA y desarrollo agéntico',
-    items: ['OpenCode', 'Claude Code', 'Agentes de IA', 'Spec-driven development'],
-    highlight: true,
-  },
-]
-
-const agenticSteps = [
-  {
-    title: 'Especificar',
-    text: 'Defino el alcance, los criterios de aceptación y las restricciones antes de delegar. El contexto correcto evita cambios innecesarios.',
-  },
-  {
-    title: 'Ejecutar',
-    text: 'Trabajo con agentes desde la terminal, como OpenCode y Claude Code, para explorar el código, aplicar cambios y automatizar tareas repetitivas.',
-  },
-  {
-    title: 'Verificar',
-    text: 'Reviso cada diferencia y valido con lint, build y pruebas. Nada se da por terminado hasta que cumple lo pedido y funciona.',
-  },
-]
-
-const cvFiles = [
-  {
-    lang: 'ES',
-    title: 'Currículum en español',
-    meta: 'PDF · 385 KB · Septiembre 2026',
-    href: `${import.meta.env.BASE_URL}cv/Pedro-Espejo-Pariani-CV-ES.pdf`,
-  },
-  {
-    lang: 'EN',
-    title: 'Résumé in English',
-    meta: 'PDF · 367 KB · September 2026',
-    href: `${import.meta.env.BASE_URL}cv/Pedro-Espejo-Pariani-CV-EN.pdf`,
-  },
-]
+function readLang() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    return saved === 'es' || saved === 'en' ? saved : null
+  } catch {
+    return null
+  }
+}
 
 function ArrowIcon() {
   return (
@@ -92,100 +21,183 @@ function ArrowIcon() {
   )
 }
 
+function DownloadIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16" fill="none">
+      <path d="M8 2v8m0 0 3.2-3.2M8 10 4.8 6.8M3 13h10" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  )
+}
+
+function LanguageGate({ onChoose }) {
+  const firstOption = useRef(null)
+  const gateEs = content.es.gate
+  const gateEn = content.en.gate
+
+  useEffect(() => {
+    firstOption.current?.focus()
+  }, [])
+
+  return (
+    <div className="lang-gate" role="dialog" aria-modal="true" aria-labelledby="lang-gate-title">
+      <div className="lang-gate-card">
+        <p className="eyebrow"><span className="status-dot" /> {gateEs.command}</p>
+        <h2 className="lang-gate-title" id="lang-gate-title">
+          {gateEs.title}
+          <span>{gateEn.title}</span>
+        </h2>
+
+        <div className="lang-options">
+          <button
+            type="button"
+            className="lang-option"
+            ref={firstOption}
+            onClick={() => onChoose('es')}
+          >
+            <span className="lang-code">es</span>
+            <span className="lang-option-text">
+              <strong>{gateEs.options[0].label}</strong>
+              <span>{gateEs.options[0].detail}</span>
+            </span>
+            <span className="lang-arrow" aria-hidden="true">→</span>
+          </button>
+
+          <button type="button" className="lang-option" onClick={() => onChoose('en')}>
+            <span className="lang-code">en</span>
+            <span className="lang-option-text">
+              <strong>{gateEn.options[1].label}</strong>
+              <span>{gateEn.options[1].detail}</span>
+            </span>
+            <span className="lang-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <p className="lang-gate-note">
+          {gateEs.note} · {gateEn.note}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function App() {
+  const [lang, setLang] = useState(readLang)
+  const active = lang ?? 'es'
+  const t = content[active]
+  const cv = cvFiles[active]
+  const otherLang = active === 'es' ? 'en' : 'es'
+  const otherCv = cvFiles[otherLang]
+
+  useEffect(() => {
+    document.documentElement.lang = active
+    document.title = active === 'en'
+      ? 'Pedro.dev — Full Stack Developer'
+      : 'Pedro.dev — Desarrollador Full Stack'
+  }, [active])
+
+  useEffect(() => {
+    document.body.classList.toggle('is-locked', !lang)
+  }, [lang])
+
+  function choose(next) {
+    setLang(next)
+    try {
+      localStorage.setItem(STORAGE_KEY, next)
+    } catch {
+      /* storage bloqueado: la elección dura la sesión */
+    }
+  }
+
   return (
     <>
+      {!lang && <LanguageGate onChoose={choose} />}
+
       <header className="site-header">
         <div className="header-inner">
           <a className="wordmark" href="#inicio" aria-label="pedro.dev, inicio">
             pedro<span>.</span>dev
           </a>
           <nav className="main-nav" aria-label="Navegación principal">
-            <a href="#sobre-mi">sobre mí</a>
-            <a href="#proyectos">proyectos</a>
-            <a href="#agentico">forma de trabajo</a>
-            <a href="#experiencia">experiencia</a>
-            <a href="#cv">cv</a>
+            {t.nav.map((item) => (
+              <a href={item.href} key={item.href}>{item.label}</a>
+            ))}
           </nav>
-          <a className="header-contact" href="#contacto">
-            Hablemos <ArrowIcon />
-          </a>
+          <div className="header-actions">
+            <div className="lang-toggle" role="group" aria-label="Idioma / Language">
+              {(['es', 'en']).map((code) => (
+                <button
+                  type="button"
+                  key={code}
+                  onClick={() => choose(code)}
+                  aria-pressed={active === code}
+                >
+                  {code}
+                </button>
+              ))}
+            </div>
+            <a className="header-contact" href="#contacto">
+              {t.headerCta} <ArrowIcon />
+            </a>
+          </div>
         </div>
       </header>
 
       <main>
         <section className="hero section-wrap" id="inicio">
           <div className="hero-copy">
-            <p className="eyebrow"><span className="status-dot" /> full stack · desarrollo agéntico · buenos aires</p>
+            <p className="eyebrow"><span className="status-dot" /> {t.hero.eyebrow}</p>
             <h1>
-              Hola, soy <span>Pedro.</span><br />
-              Creo cosas<br className="desktop-break" /> para la vida real.
+              {t.hero.titleA}<span>{t.hero.titleB}</span><br />
+              {t.hero.titleC}<br className="desktop-break" /> {t.hero.titleD}
             </h1>
-            <p className="hero-description">
-              Construyo herramientas web que resuelven problemas concretos: interfaces intuitivas,
-              APIs y automatizaciones, con flujos de trabajo asistidos por IA.
-            </p>
+            <p className="hero-description">{t.hero.description}</p>
             <div className="hero-actions">
               <a className="button" href="#proyectos">
-                Ver proyectos <span aria-hidden="true">↓</span>
+                {t.hero.primary} <span aria-hidden="true">↓</span>
               </a>
-              <a className="text-link" href="#cv">
-                Descargar CV <ArrowIcon />
+              <a className="button button--ghost" href={cv.href} download={cv.fileName}>
+                {t.hero.secondary} <DownloadIcon />
               </a>
             </div>
           </div>
 
-          <aside className="terminal" aria-label="Resumen del perfil">
+          <aside className="terminal" aria-label={t.hero.terminalFoot}>
             <div className="terminal-bar">
               <span className="dot" /><span className="dot" /><span className="dot dot--accent" />
               <span className="terminal-title">pedro@dev: ~/portfolio</span>
             </div>
             <div className="terminal-body">
               <p><span className="term-prompt">$</span> whoami</p>
-              <p className="term-out">pedro espejo pariani</p>
+              <p className="term-out">{t.hero.terminalUser}</p>
               <p className="term-gap" />
               <p><span className="term-prompt">$</span> cat stack.json</p>
-              <pre className="term-block">{`{
-  "rol": "full stack developer",
-  "front": ["react", "typescript"],
-  "back": ["c#", ".net", "sql server"],
-  "extra": ["ia agéntica", "automatización"]
-}`}</pre>
+              <pre className="term-block">{t.hero.terminalJson}</pre>
               <p className="term-gap" />
               <p><span className="term-prompt">$</span> status --now</p>
-              <p className="term-out">trabajando en sarsy s.r.l.<span className="term-cursor" /></p>
+              <p className="term-out">{t.hero.terminalStatus}<span className="term-cursor" /></p>
             </div>
             <div className="terminal-foot">
-              <span className="status-dot" /> disponible para nuevos proyectos
+              <span className="status-dot" /> {t.hero.terminalFoot}
             </div>
           </aside>
 
-          <a className="scroll-note" href="#sobre-mi"><span /> scroll</a>
+          <a className="scroll-note" href="#sobre-mi"><span /> {t.hero.scroll}</a>
         </section>
 
         <section className="intro section-wrap" id="sobre-mi">
           <div className="section-head">
             <div>
-              <p className="eyebrow">01 / sobre mí</p>
-              <h2>Entre el código<br />y el <em>impacto.</em></h2>
+              <p className="eyebrow">{t.intro.eyebrow}</p>
+              <h2>{t.intro.titleA}<br />{t.intro.titleB}<em>{t.intro.titleEm}</em></h2>
             </div>
-            <p className="section-note">
-              Me gusta entender el problema antes de escribir la solución. Prefiero menos
-              piezas, bien pensadas, antes que muchas a medio terminar.
-            </p>
+            <p className="section-note">{t.intro.note}</p>
           </div>
 
           <div className="intro-copy">
-            <p className="intro-lead">
-              Soy Técnico Universitario en Programación y desarrollador Full Stack en Sarsy S.R.L.
-            </p>
-            <p>
-              En mi día a día trabajo con React, .NET y SQL Server, creando sistemas de gestión y
-              automatizando tareas administrativas. Y cada vez más, integro agentes de IA en mi
-              forma de programar, sin perder de vista la calidad del código.
-            </p>
-            <div className="stack-groups" aria-label="Stack tecnológico">
-              {stackGroups.map((group) => (
+            <p className="intro-lead">{t.intro.lead}</p>
+            <p>{t.intro.body}</p>
+            <div className="stack-groups" aria-label={t.intro.stackLabel}>
+              {t.intro.groups.map((group) => (
                 <div className={`stack-group${group.highlight ? ' stack-group--highlight' : ''}`} key={group.title}>
                   <p className="stack-title">{group.title}</p>
                   <div className="skill-list">
@@ -200,16 +212,14 @@ function App() {
         <section className="projects section-wrap" id="proyectos">
           <div className="section-head">
             <div>
-              <p className="eyebrow">02 / selección de trabajos</p>
-              <h2>Hecho con intención<span className="accent">.</span></h2>
+              <p className="eyebrow">{t.projects.eyebrow}</p>
+              <h2>{t.projects.titleA}<span className="accent">.</span></h2>
             </div>
-            <p className="section-note">
-              Proyectos personales y académicos<br />que muestran cómo pienso y construyo.
-            </p>
+            <p className="section-note">{t.projects.note}</p>
           </div>
 
           <div className="project-list">
-            {projects.map((project) => (
+            {t.projects.items.map((project) => (
               <article className="project-row" key={project.number}>
                 <span className="project-index">{project.number}</span>
                 <div className="project-main">
@@ -228,28 +238,22 @@ function App() {
         <section className="agentic section-wrap" id="agentico">
           <div className="section-head">
             <div>
-              <p className="eyebrow">03 / forma de trabajo</p>
-              <h2>Programar con <em>agentes,</em><br />con criterio.</h2>
+              <p className="eyebrow">{t.agentic.eyebrow}</p>
+              <h2>{t.agentic.titleA}<em>{t.agentic.titleEm}</em><br />{t.agentic.titleB}</h2>
             </div>
-            <p className="section-note">
-              Uso herramientas de IA para planificar, implementar y revisar cambios. Las decisiones
-              de diseño y la revisión final siguen siendo mías.
-            </p>
+            <p className="section-note">{t.agentic.note}</p>
           </div>
 
           <div className="agentic-grid">
-            {agenticSteps.map((step, index) => (
+            {t.agentic.steps.map((step, index) => (
               <article className="agentic-card" key={step.title}>
                 <span className="agentic-index">0{index + 1}</span>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
               </article>
             ))}
-            <div className="agentic-tools" aria-label="Herramientas de IA">
-              <span>OpenCode</span>
-              <span>Claude Code</span>
-              <span>Git</span>
-              <span>Lint &amp; build</span>
+            <div className="agentic-tools" aria-label="Tooling">
+              {t.agentic.tools.map((tool) => <span key={tool}>{tool}</span>)}
             </div>
           </div>
         </section>
@@ -257,84 +261,80 @@ function App() {
         <section className="experience section-wrap" id="experiencia">
           <div className="section-head">
             <div>
-              <p className="eyebrow">04 / experiencia &amp; educación</p>
-              <h2>Aprender.<br /><em>Construir.</em> Mejorar.</h2>
+              <p className="eyebrow">{t.experience.eyebrow}</p>
+              <h2>{t.experience.titleA}<br /><em>{t.experience.titleEm}</em>{t.experience.titleB}</h2>
             </div>
-            <p className="section-note">
-              Un año y medio construyendo software en producción,<br />
-              mientras termino la facultad y sigo estudiando por mi cuenta.
-            </p>
+            <p className="section-note">{t.experience.note}</p>
           </div>
 
           <div className="timeline">
-            <article className="timeline-item">
-              <div className="timeline-date">mar 2025 — actualidad</div>
-              <div className="timeline-content">
-                <div className="timeline-title">
-                  <h3>Full Stack Developer</h3>
-                  <span>Sarsy S.R.L. · Buenos Aires</span>
+            {t.experience.jobs.map((job) => (
+              <article className="timeline-item" key={job.role}>
+                <div className="timeline-date">{job.period}</div>
+                <div className="timeline-content">
+                  <div className="timeline-title">
+                    <h3>{job.role}</h3>
+                    <span>{job.company}</span>
+                  </div>
+                  {job.bullets.length > 0 && (
+                    <ul>{job.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
+                  )}
                 </div>
-                <ul>{experience.map((item) => <li key={item}>{item}</li>)}</ul>
-              </div>
-            </article>
-            <article className="timeline-item">
-              <div className="timeline-date">ago 2023 — dic 2025</div>
-              <div className="timeline-content">
-                <div className="timeline-title">
-                  <h3>Tecnicatura Universitaria en Programación</h3>
-                  <span>UTN · Facultad Regional General Pacheco</span>
-                </div>
-              </div>
-            </article>
+              </article>
+            ))}
           </div>
         </section>
 
         <section className="cv section-wrap" id="cv">
           <div className="section-head">
             <div>
-              <p className="eyebrow">05 / currículum</p>
-              <h2>Mi CV, en<br /><em>dos idiomas.</em></h2>
+              <p className="eyebrow">{t.cv.eyebrow}</p>
+              <h2>{t.cv.titleA}<br /><em>{t.cv.titleEm}</em></h2>
             </div>
-            <p className="section-note">
-              Español o inglés, mismo recorrido. Descargalo en PDF<br />y escribime si querés el
-              detalle de algún proyecto.
-            </p>
+            <p className="section-note">{t.cv.note}</p>
           </div>
 
           <div className="cv-grid">
-            {cvFiles.map((cv) => (
-              <a className="cv-card" href={cv.href} download key={cv.lang}>
-                <span className="cv-lang">{cv.lang}</span>
-                <span className="cv-info">
-                  <strong>{cv.title}</strong>
-                  <span>{cv.meta}</span>
-                </span>
-                <span className="cv-arrow" aria-hidden="true">↓</span>
-              </a>
-            ))}
+            <a className="cv-card" href={cv.href} download={cv.fileName}>
+              <span className="cv-lang">{cv.lang}</span>
+              <span className="cv-info">
+                <strong>{cv.title}</strong>
+                <span>{cv.meta}</span>
+              </span>
+              <span className="cv-arrow" aria-hidden="true">↓</span>
+            </a>
+            <a className="cv-alt" href={otherCv.href} download={otherCv.fileName}>
+              {t.cv.other} <DownloadIcon />
+            </a>
           </div>
         </section>
 
         <section className="contact section-wrap" id="contacto">
           <div className="contact-copy">
-            <p className="eyebrow">06 / siguiente paso</p>
-            <h2>¿Hacemos algo<br /><em>bueno juntos?</em></h2>
-            <p>Si tenés una idea, un desafío o simplemente querés conectar, escribime.</p>
+            <p className="eyebrow">{t.contact.eyebrow}</p>
+            <h2>{t.contact.titleA}<br /><em>{t.contact.titleEm}</em></h2>
+            <p>{t.contact.note}</p>
             <a className="button" href="mailto:espejoparianipedro@gmail.com">
               espejoparianipedro@gmail.com <ArrowIcon />
             </a>
           </div>
           <div className="contact-links">
-            <a href="https://www.linkedin.com/in/pedroespejopariani" target="_blank" rel="noreferrer">LinkedIn <ArrowIcon /></a>
-            <a href="https://github.com/20Pep" target="_blank" rel="noreferrer">GitHub <ArrowIcon /></a>
-            <a href="#cv">CV · español / inglés <ArrowIcon /></a>
+            {t.contact.links.map((link) => (
+              <a
+                href={link.href}
+                key={link.label}
+                {...(link.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+              >
+                {link.label} <ArrowIcon />
+              </a>
+            ))}
           </div>
         </section>
       </main>
 
       <footer className="site-footer section-wrap">
         <a className="wordmark" href="#inicio">pedro<span>.</span>dev</a>
-        <p>Diseñado y desarrollado con intención.</p>
+        <p>{t.footer.note}</p>
         <span>© {new Date().getFullYear()} Pedro Espejo Pariani</span>
       </footer>
     </>

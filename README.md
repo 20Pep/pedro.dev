@@ -37,7 +37,8 @@ portafolio/
 │   ├── favicon.svg
 │   └── icons.svg
 ├── src/
-│   ├── App.jsx                          # sitio completo + contenido
+│   ├── App.jsx                          # estructura y componentes
+│   ├── content.js                       # copy ES / EN + rutas de CV
 │   ├── App.css                          # layout y componentes
 │   ├── index.css                        # tokens, fuentes y base
 │   └── main.jsx                         # entry point
@@ -47,15 +48,24 @@ portafolio/
 
 ## Editar contenido
 
-Todo el texto sale de arrays al principio de `portafolio/src/App.jsx`:
+Todo el texto vive en `portafolio/src/content.js`, duplicado en `content.es` y `content.en`. `App.jsx` solo renderiza el idioma activo.
 
-| Array | Qué controla |
+| Clave | Qué controla |
 | --- | --- |
-| `experience` | Bullets del puesto en Sarsy S.R.L. |
-| `projects` | Los tres proyectos (nombre, tipo, descripción, stack) |
-| `stackGroups` | Grupos del stack en "Sobre mí" |
-| `agenticSteps` | Los tres pasos de la sección "Forma de trabajo" |
-| `cvFiles` | Tarjetas de descarga del CV (idioma, título, peso, ruta) |
+| `hero` | Hero, terminal y botones |
+| `intro` | Sobre mí y grupos del stack |
+| `projects.items` | Los tres proyectos (nombre, tipo, descripción, stack) |
+| `agentic.steps` | Los tres pasos de "Forma de trabajo" |
+| `experience.jobs` | Puesto, bullets y educación |
+| `cv` | Sección de descarga del CV |
+| `contact` | Cierre y links |
+| `gate` | Pantalla de elección de idioma |
+
+`cvFiles` (también en `content.js`, fuera de `content`) define el PDF de cada idioma.
+
+### Idiomas
+
+La primera visita muestra un selector ES/EN y guarda la elección en `localStorage` bajo `lang`. El toggle del header permite cambiarla después. El botón "Descargar CV" del hero descarga directo el PDF del idioma activo.
 
 Las secciones se navegan por anclas (`#sobre-mi`, `#proyectos`, `#agentico`, `#experiencia`, `#cv`, `#contacto`), así que si agregás una sección nueva, sumá su link en el header.
 
