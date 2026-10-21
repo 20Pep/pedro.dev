@@ -2,7 +2,7 @@
 
 Portfolio personal de **Pedro Espejo Pariani**, desarrollador Full Stack especializado en React, .NET y SQL Server.
 
-Sitio en vivo: **https://pedro-dev-ten.vercel.app**
+Sitio en vivo: **https://pedroespejo.vercel.app**
 
 Una sola página, sin router ni librerías de UI: tipografía propia, tema oscuro con acento verde terminal y todo el contenido declarado como datos en un archivo.
 
