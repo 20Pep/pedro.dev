@@ -1,8 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
-  "installCommand": "cd portafolio && bun install",
-  "buildCommand": "cd portafolio && bun run build",
-  "outputDirectory": "portafolio/dist",
-  "cleanUrls": true
-}
