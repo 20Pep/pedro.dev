@@ -64,6 +64,18 @@ Las secciones se navegan por anclas (`#sobre-mi`, `#proyectos`, `#agentico`, `#e
 1. Reemplazá el PDF en `portafolio/public/cv/` manteniendo el nombre (`Pedro-Espejo-Pariani-CV-ES.pdf` / `-EN.pdf`).
 2. Actualizá el texto de `meta` en `cvFiles` con el peso y la fecha nuevos.
 
+### Regenerar la imagen de preview
+
+`portafolio/public/og.png` (1200×630) es lo que se ve al compartir el link en LinkedIn o WhatsApp.
+
+```bash
+cd portafolio
+bun add -d @napi-rs/canvas
+bun run scripts/generate-og.mjs
+```
+
+El script usa las fuentes del sistema (Segoe UI y Consolas). Después de regenerarla, borrá la dependencia si no querés mantenerla: `bun remove @napi-rs/canvas`.
+
 ## Deploy
 
 Hosteado en **Vercel** con la *Root Directory* del proyecto apuntando a `portafolio/`.
