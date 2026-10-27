@@ -4,7 +4,7 @@ Portfolio personal de **Pedro Espejo Pariani**, desarrollador Full Stack especia
 
 Sitio en vivo: **https://pedroespejo.vercel.app**
 
-Una sola página, sin router ni librerías de UI: tipografía propia, tema oscuro con acento verde terminal y todo el contenido declarado como datos en un archivo.
+Una sola página, sin router ni librerías de UI: tipografía propia (Cinzel, Cormorant e Inter), tema oscuro de arena y especia, atmósfera animada en canvas y todo el contenido declarado como datos en un archivo.
 
 ## Stack
 

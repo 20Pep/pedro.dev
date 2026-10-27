@@ -1,9 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   font-family: 'Inter', system-ui, Arial, sans-serif;
-  color: #a4aea8;
-  background: #080a09;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -11,28 +9,51 @@
   font-optical-sizing: auto;
   font-weight: 400;
 
-  --bg: #080a09;
-  --surface: #0c0f0d;
-  --surface-2: #111613;
-  --ink: #e8ede9;
-  --body: #a4aea8;
-  --muted: #7b857f;
-  --line: rgba(232, 237, 233, .09);
-  --line-strong: rgba(232, 237, 233, .18);
-  --accent: #4ade80;
-  --accent-dim: rgba(74, 222, 128, .1);
-  --accent-glow: rgba(74, 222, 128, .28);
-  --display: 'Inter', system-ui, Arial, sans-serif;
+  --bg: #0a0705;
+  --bg-deep: #060403;
+  --surface: #120c07;
+  --surface-2: #1a1109;
+  --ink: #f5e9d3;
+  --body: #c3ad8d;
+  --muted: #98866c;
+  --line: rgba(245, 233, 211, .1);
+  --line-strong: rgba(245, 233, 211, .22);
+  --accent: #e58c3c;
+  --accent-soft: #f6b878;
+  --accent-dim: rgba(229, 140, 60, .12);
+  --accent-glow: rgba(229, 140, 60, .35);
+  --sand: #d9b684;
+  --display: 'Cinzel', 'Times New Roman', serif;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', system-ui, Arial, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
 }
 
 * { box-sizing: border-box; }
-html { min-width: 320px; scroll-behavior: smooth; scroll-padding-top: 90px; }
-body { min-width: 320px; min-height: 100vh; margin: 0; }
-body, button, a { font-family: var(--display); }
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+  background: var(--bg-deep);
+  scrollbar-width: thin;
+  scrollbar-color: #3a2410 #070403;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: clip;
+  color: var(--body);
+  background-color: var(--bg);
+}
+
+body, button, a { font-family: var(--sans); }
 a { color: inherit; }
 img, svg { display: block; }
 
+/* desierto de fondo fijo: dos atardeceres y una duna lejana */
 body::before {
   content: '';
   position: fixed;
@@ -40,19 +61,45 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(70% 45% at 78% -8%, rgba(74, 222, 128, .09), transparent 70%),
-    radial-gradient(50% 40% at 0% 100%, rgba(74, 222, 128, .04), transparent 70%);
+    radial-gradient(80% 55% at 86% -14%, rgba(198, 104, 32, .24), transparent 62%),
+    radial-gradient(58% 45% at 4% 108%, rgba(146, 78, 26, .17), transparent 70%),
+    linear-gradient(180deg, #0b0705 0%, #080504 46%, #0a0605 100%);
 }
 
-::selection { color: #05130a; background: var(--accent); }
+/* grano de arena sobre toda la página */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+::selection {
+  color: #1b0d03;
+  background: var(--accent);
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #070403; }
+::-webkit-scrollbar-thumb {
+  border: 2px solid #070403;
+  background: #33200f;
+}
+::-webkit-scrollbar-thumb:hover { background: #4d3018; }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

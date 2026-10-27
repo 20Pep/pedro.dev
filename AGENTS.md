@@ -1,7 +1,7 @@
 # Repository guidance
 
 - The portfolio app is in `portafolio/`; there is no root package/workspace. Run Bun commands from that directory.
-- Stack: React 19 (JSX) + Vite 8. `src/main.jsx` mounts `src/App.jsx`. Global tokens and fonts live in `src/index.css`; all layout and component styles live in `src/App.css` (dark theme, terminal-green accent).
+- Stack: React 19 (JSX) + Vite 8. `src/main.jsx` mounts `src/App.jsx`. Global tokens and fonts live in `src/index.css`; all layout and component styles live in `src/App.css` (dark sand/spice theme, Cinzel display type).
 - `src/App.jsx` is the whole site: a single-page portfolio with anchor navigation and no router. All copy lives in `src/content.js` as a `content.es` / `content.en` pair; `App.jsx` only maps the active locale to JSX. When adding copy, add it to **both** locales.
 - The site is bilingual. On first visit a language gate (`LanguageGate` in `App.jsx`) asks ES/EN and stores the choice in `localStorage` under `lang`; the header toggle switches it later. `document.documentElement.lang` and `document.title` follow the active locale.
 - CV downloads are direct (`download` attribute) and depend on the active locale: `cvFiles.es` / `cvFiles.en` in `src/content.js`. The hero button downloads immediately; it must not link to the `#cv` section.
